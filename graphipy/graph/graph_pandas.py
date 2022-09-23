@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from pathlib import Path
 
 from graphipy.graph.graph_base import BaseGraph
 
@@ -23,7 +24,7 @@ class PandasGraph(BaseGraph):
         self.nodes_dict = {}
         self.edges_dict = {}
 
-        self.path = os.getcwd() + "\\csv"
+        self.path = Path(os.getcwd()) / "csv"
         if not os.path.exists(self.path):
             os.mkdir(self.path)
 
@@ -58,9 +59,9 @@ class PandasGraph(BaseGraph):
         """ exports all dataframes as csv """
 
         # Create folders to export to
-        export_path = self.path + "\\" + prefix + "\\"
-        export_path_node = export_path + "nodes\\"
-        export_path_edge = export_path + "edges\\"
+        export_path = self.path / prefix 
+        export_path_node = export_path / "nodes"
+        export_path_edge = export_path / "edges"
 
         if not os.path.exists(export_path):
             os.mkdir(export_path)
@@ -94,9 +95,9 @@ class PandasGraph(BaseGraph):
         """ exports a specified dataframe as csv """
 
         # Create folders to export to
-        export_path = self.path + "\\" + prefix + "\\"
-        export_path_node = export_path + "nodes\\"
-        export_path_edge = export_path + "edges\\"
+        export_path = self.path / prefix 
+        export_path_node = export_path / "nodes"
+        export_path_edge = export_path / "edges"
 
         if not os.path.exists(export_path):
             os.mkdir(export_path)
