@@ -175,24 +175,29 @@ class Reddit:
         subreddit = self.request_info(SUBREDDIT_API_URL, subreddit_name)
         graph.create_node(Subreddit(subreddit))
 
-        for submission in submissions:
+        for idx, submission in enumerate(submissions):
             submission = submission["data"]
 
             # Redditor Node
-            redditor = self.request_info(USER_API_URL, submission["author"])
-            graph.create_node(Redditor(redditor))
+            print(idx)
+            if submission['author'] != '[deleted]':
+                redditor = self.request_info(USER_API_URL, submission["author"])
 
-            # Submission Node
-            graph.create_node(Submission(submission))
+                if "id" in redditor.keys() and "id" in submission.keys():
+                    graph.create_node(Redditor(redditor))
 
-            # Edges
-            graph.create_edge(Edge(redditor["id"], submission["id"], "POSTED"))
-            graph.create_edge(
-                Edge(submission["id"], redditor["id"], "SUBMISSION_CREATED_BY"))
-            graph.create_edge(
-                Edge(submission["id"], subreddit["id"], "ON"))
-            graph.create_edge(
-                Edge(subreddit["id"], submission["id"], "HAS_SUBMISSION"))
+                    # Submission Node
+                    graph.create_node(Submission(submission))
+
+
+                    # Edges
+                    graph.create_edge(Edge(redditor["id"], submission["id"], "POSTED"))
+                    graph.create_edge(
+                        Edge(submission["id"], redditor["id"], "SUBMISSION_CREATED_BY"))
+                    graph.create_edge(
+                        Edge(submission["id"], subreddit["id"], "ON"))
+                    graph.create_edge(
+                        Edge(subreddit["id"], submission["id"], "HAS_SUBMISSION"))
 
 
 
