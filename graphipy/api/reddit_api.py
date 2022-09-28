@@ -32,9 +32,13 @@ class Reddit:
         }
 
     def request_info(self, url, name):
+        """Make a careful request, return None if error."""
         url = url + name + "/about"
         response = self.get_request(url)
-        return response["data"]
+        if 'data' in response.keys():
+            return response["data"]
+        else:
+            return None
 
     def generate_url(self, url, params):
         l = [url, "/?"]
@@ -198,7 +202,7 @@ class Reddit:
                         Edge(submission["id"], subreddit["id"], "ON"))
                     graph.create_edge(
                         Edge(subreddit["id"], submission["id"], "HAS_SUBMISSION"))
-                        
+
         return graph
 
 
@@ -230,6 +234,11 @@ class Reddit:
         response = self.get_request(url, params)
 
         # Submission Node
+        if type(response)!=list or len(response)<=0:
+            return None
+        if len(response[0]["data"]["children"])<=0:
+            return None
+        
         submission = response[0]["data"]["children"][0]["data"]
         graph.create_node(Submission(submission))
 
@@ -261,13 +270,15 @@ class Reddit:
 
             # Redditor Node
             redditor = self.request_info(USER_API_URL, comment["author"])
-            graph.create_node(Redditor(redditor))
+            if redditor:
+                graph.create_node(Redditor(redditor))
 
             # Comment Node
-            graph.create_node(Comment(comment))
+            if comment:
+                graph.create_node(Comment(comment))
 
             # Edges
-            if comment["parent_id"][0:2] == "t3":  # parent is a submission
+            if redditor and comment["parent_id"][0:2] == "t3":  # parent is a submission
                 graph.create_edge(
                     Edge(redditor["id"], comment["id"], "COMMENTED"))
                 graph.create_edge(
@@ -276,7 +287,7 @@ class Reddit:
                     Edge(comment["id"], comment["parent_id"][3:], "ON_POST"))
                 graph.create_edge(
                     Edge(comment["parent_id"][3:], comment["id"], "HAS_COMMENT"))
-            else:
+            elif redditor:
                 graph.create_edge(
                     Edge(redditor["id"], comment["id"], "REPLIED"))
                 graph.create_edge(
@@ -285,6 +296,10 @@ class Reddit:
                     Edge(comment["id"], comment["parent_id"][3:], "TO"))
                 graph.create_edge(
                     Edge(comment["parent_id"][3:], comment["id"], "HAS_REPLY"))
+            else:
+                pass
+        
+        return graph
 
 
 
