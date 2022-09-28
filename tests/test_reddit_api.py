@@ -38,6 +38,6 @@ def test_init():
     subreddit_submissions = reddit.fetch_subreddit_submissions(
                                 graphipy.create_graph(), 
                                 subreddit_name=sub_reddits[0], 
-                                limit=100)
-    #subreddit_submissions.get_df()
-    assert True == True
+                                limit=10)
+    keys = list(subreddit_submissions.get_nodes().keys())
+    assert keys == ['subreddit', 'redditor', 'submission']

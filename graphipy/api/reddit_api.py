@@ -198,6 +198,8 @@ class Reddit:
                         Edge(submission["id"], subreddit["id"], "ON"))
                     graph.create_edge(
                         Edge(subreddit["id"], submission["id"], "HAS_SUBMISSION"))
+                        
+        return graph
 
 
 

@@ -20,5 +20,5 @@ setup(
     url="https://github.com/IMTorgOpenDataTools/GraphiPy",
     packages=find_packages(include=['graphipy']),
     python_requires=">=3.10",
-    install_reqs = required
+    install_requires = required
 )
