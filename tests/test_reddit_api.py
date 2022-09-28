@@ -39,4 +39,5 @@ def test_init():
                                 graphipy.create_graph(), 
                                 subreddit_name=sub_reddits[0], 
                                 limit=100)
+    #subreddit_submissions.get_df()
     assert True == True
